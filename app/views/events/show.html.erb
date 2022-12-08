@@ -44,9 +44,6 @@
           イベントの説明
         </div>
         <div class="card-body">
-          <% if @event.only_woman? %>
-            女性限定
-          <% end %>
           <%= simple_format @event.content %>
         </div>
       </div>
@@ -88,12 +85,20 @@
           <div class="text-center">
             <% if logged_in? %>
               <% if !current_user.owner?(@event) %>
-                <% if !@event.only_woman? %>
-                  <%= render "attend" %>
+                <% if current_user.attend?(@event) %>
+                  <%= link_to 'キャンセルする',
+                              event_attendance_url(@event),
+                              class: 'btn btn-primary',
+                              method: :delete,
+                              data: { confirm: 'キャンセルします' }
+                  %>
                 <% else %>
-                  <% if current_user.woman? %>
-                    <%= render "attend" %>
-                  <% end %>
+                  <%= link_to 'このもくもく会に参加する',
+                              event_attendance_url(@event),
+                              class: 'btn btn-primary',
+                              method: :post,
+                              data: { confirm: '申し込みます' }
+                  %>
                 <% end %>
               <% end %>
             <% end %>
